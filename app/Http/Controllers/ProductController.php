@@ -7,13 +7,14 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    public function index() {
+    public function index()
+    {
         $products = Product::all();
         return $products;
     }
 
-    public function store(Request $request) {
-
+    public function store(Request $request)
+    {
 
         try {
             $request->validate([
@@ -21,27 +22,54 @@ class ProductController extends Controller
 
             ]);
 
-        } catch(\Exception $exception) {
+
+            $data = $request->all();
+
+            $product = Product::create($data);
+
+            return $product;
+        } catch (\Exception $exception) {
             return $exception->getMessage();
         }
+    }
 
-        $data = $request->all();
+    public function show($id)
+    {
+        $product = Product::find($id);
 
-        $product = Product::create($data);
+        if (!$product) return response()->json(['message' => 'Produto não encontrado'], 404);
 
         return $product;
-
     }
 
-    public function show() {
+    public function destroy($id)
+    {
+        $product = Product::find($id);
 
+        if (!$product) return response()->json(['message' => 'Produto não encontrado'], 404);
+
+        $product->delete();
+
+        return response('', 204);
     }
 
-    public function destroy() {
+    public function update($id, Request $request)
+    {
 
-    }
+        try {
+            $request->validate([
+                'name' => 'required|unique:products|string|max:150',
 
-    public function update() {
+            ]);
 
+            $product = Product::find($id);
+            if (!$product) return response()->json(['message' => 'Produto não encontrado'], 404);
+
+            $product->update($request->all());
+
+            return $product;
+        } catch (\Exception $exception) {
+            return $exception->getMessage();
+        }
     }
 }
