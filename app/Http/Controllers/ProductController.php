@@ -13,6 +13,18 @@ class ProductController extends Controller
     }
 
     public function store(Request $request) {
+
+
+        try {
+            $request->validate([
+                'name' => 'required|unique:products|string|max:150',
+
+            ]);
+
+        } catch(\Exception $exception) {
+            return $exception->getMessage();
+        }
+
         $data = $request->all();
 
         $product = Product::create($data);
