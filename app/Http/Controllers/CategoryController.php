@@ -35,7 +35,26 @@ class CategoryController extends Controller {
         return $category;
     }
 
-    public function update($id) {
+    public function update($id,  Request $request) {
+        try {
+            $category = Category::find($id);
+
+            if (!$category) {
+                return response()->json(['message' => 'Categoria não encontrada'], 404);
+            }
+
+            if ($request->name) {
+                $request->validate([
+                    'name' => 'required|string|max:150|unique:categories',
+                ]);
+            }
+
+            $category->update($request->all());
+
+            return $category;
+        } catch (\Exception $exception) {
+            return response()->json(['message' => $exception->getMessage()], 400);
+        }
     }
 
     public function destroy($id) {
