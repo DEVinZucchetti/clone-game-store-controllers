@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('products_assets', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('product_id');
-            $table->string('product_id')->unique();
             $table->string('name', 150)->nullable();
             $table->string('url')->nullable();
             $table->enum('type',['VIDEO','IMAGEN'])->nullable();
