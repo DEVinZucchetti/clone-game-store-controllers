@@ -13,3 +13,6 @@ Route::put('products/{id}', [ProductController::class, 'update']);
 
 Route::get('products_assets', [ProductAssetController::class, 'index']);
 Route::post('products_assets', [ProductAssetController::class, 'store']);
+Route::get('products_assets/{id}', [ProductAssetController::class, 'show']);
+Route::delete('products_assets/{id}', [ProductAssetController::class, 'destroy']);
+Route::put('products_assets/{id}', [ProductAssetController::class, 'update']);
