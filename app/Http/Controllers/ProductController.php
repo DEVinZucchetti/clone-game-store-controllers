@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use Exception;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
+
     public function index()
     {
         $products = Product::all();
@@ -22,7 +24,6 @@ class ProductController extends Controller
 
             ]);
 
-
             $data = $request->all();
 
             $product = Product::create($data);
@@ -35,11 +36,15 @@ class ProductController extends Controller
 
     public function show($id)
     {
-        $product = Product::find($id);
+        try {
+            $product = Product::find($id);
 
-        if (!$product) return response()->json(['message' => 'Produto não encontrado'], 404);
+            if (!$product) return response()->json(['message' => 'Produto não encontrado'], 404);
 
-        return $product;
+            return $product;
+        } catch (Exception $exception) {
+            return response()->json(['message' => $exception->getMessage()], 400);
+        }
     }
 
     public function destroy($id)
@@ -48,6 +53,7 @@ class ProductController extends Controller
 
         if (!$product) return response()->json(['message' => 'Produto não encontrado'], 404);
 
+
         $product->delete();
 
         return response('', 204);
@@ -55,21 +61,21 @@ class ProductController extends Controller
 
     public function update($id, Request $request)
     {
-
         try {
-            $request->validate([
-                'name' => 'required|unique:products|string|max:150',
-
-            ]);
 
             $product = Product::find($id);
+
             if (!$product) return response()->json(['message' => 'Produto não encontrado'], 404);
+
+            $request->validate([
+                'name' => 'required|unique:products|string|max:150'
+            ]);
 
             $product->update($request->all());
 
             return $product;
-        } catch (\Exception $exception) {
-            return $exception->getMessage();
+        } catch (Exception $exception) {
+            return response()->json(['message' => $exception->getMessage()], 400);
         }
     }
 }
