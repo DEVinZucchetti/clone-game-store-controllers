@@ -9,7 +9,9 @@ class Product extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'price', 'cover', 'description' ];
+    protected $hidden = ['created_at', 'updated_at'];
+
+    protected $fillable = ['name', 'price', 'cover', 'description'];
 
     protected $casts = [
         'price' => 'float'
